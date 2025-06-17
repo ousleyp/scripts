@@ -30,4 +30,5 @@ it is created.
 
 ### roadmap
 
+- bash shell compatibility
 - add directory support 

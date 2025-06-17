@@ -2,13 +2,14 @@
 
 I can't fully vouch for the quality of these scripts,
 which were generated with AI chatbot assistance. If
-you are a human with advice, feel free to ping me on 
+you are a human with feedback, feel free to ping me on 
 Slack!
 
 I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you
 are welcome to use them. Bear in mind that they might
-be incomplete.
+need more testing, and they are based on the structure
+of the openshift-docs repo.
 
 ## implode-assembly.sh
 
@@ -20,8 +21,10 @@ the markup/raw files in addition to the content.
 
 _usage_
 
+First, make the script executable:
+
 ```
-$ chmod +x ./implode-assembly.sh # make it executable
+$ chmod +x ./implode-assembly.sh
 ```
 
 Run the script, passing one or more arguments:

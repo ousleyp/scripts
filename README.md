@@ -8,9 +8,9 @@ as performing Content Quality Assessments), and you
 are welcome to use them. Bear in mind that they might
 be incomplete.
 
-## implode-assembly.zsh
+## implode-assembly.sh
 
-**implode-assembly.zsh** prepares documentation for use
+**implode-assembly.sh** prepares documentation for use
 with AI such as NotebookLM by "inlining" the contents
 of included modules/snippets while retaining the
 assembly context. This way, the AI can also analyze
@@ -19,9 +19,9 @@ the markup/raw files in addition to the content.
 _usage_
 
 ```
-$ chmod +x ./implode-assembly.zsh # make it executable
+$ chmod +x ./implode-assembly.sh # make it executable
 
-$ ./implode-assembly.zsh <path/to/assembly>
+$ ./implode-assembly.sh <path/to/assembly>
 ```
 
 The output is saved to a file in a directory called
@@ -35,7 +35,7 @@ increments if a file already exists.
 For example:
 
 ```
-❯ ~/implode-assembly.zsh virt/install/installing-virt.adoc
+❯ ~/implode-assembly.sh virt/install/installing-virt.adoc
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  Imploded:       /Users/panousley/imploded_assemblies/installing-virt_main_v2.adoc
  Source:         virt/install/installing-virt.adoc
@@ -49,7 +49,8 @@ For example:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
+If you prefer zsh as your shell, `implode-assembly.zsh` works the same way.
+
 ### roadmap
 
-- bash shell compatibility
 - add directory support 

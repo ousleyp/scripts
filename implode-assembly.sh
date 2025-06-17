@@ -3,6 +3,20 @@
 output_root="$HOME/imploded_assemblies"
 mkdir -p "$output_root"
 
+suppress_output=false
+
+declare -a args=()
+for arg in "$@"; do
+  case "$arg" in
+    -q|--quiet)
+      suppress_output=true
+      ;;
+    *)
+      args+=("$arg")
+      ;;
+  esac
+done
+
 ai_comment_block='// This file contains a fully expanded version of an OpenShift documentation *assembly* written in AsciiDoc.
 // It is not valid AsciiDoc for publishing, because it includes both the original `include::` statements
 // and the full contents of the referenced *module* or *snippet* files placed immediately underneath each include.
@@ -109,26 +123,34 @@ implode_file() {
   mv "$temp_final" "$output_file"
   rm "$temp_content"
 
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo " Imploded:       $output_file"
-  echo " Source:         $label"
-  echo " Timestamp:      $timestamp"
-  echo " Git branch:     $git_branch"
-  echo " Modules:        ${#included_modules[@]}"
-  for m in "${included_modules[@]}"; do echo "   • $m"; done
-  echo " Snippets:       ${#included_snippets[@]}"
-  for s in "${included_snippets[@]}"; do echo "   • $s"; done
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo ""
+  if [[ "$suppress_output" == false ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo " Imploded:       $output_file"
+    echo " Source:         $label"
+    echo " Timestamp:      $timestamp"
+    echo " Git branch:     $git_branch"
+    echo " Modules:        ${#included_modules[@]}"
+    for m in "${included_modules[@]}"; do echo "   • $m"; done
+    echo " Snippets:       ${#included_snippets[@]}"
+    for s in "${included_snippets[@]}"; do echo "   • $s"; done
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+  else
+    if [[ "$quiet_header_shown" != true ]]; then
+      echo "Generated files:"
+      quiet_header_shown=true
+    fi
+    echo "$output_file"
+  fi
 }
 
 # MAIN
-if [[ "$#" -eq 0 ]]; then
-  echo "Usage: $0 <assembly.adoc> [more_files_or_dirs...]"
+if [[ "${#args[@]}" -eq 0 ]]; then
+  echo "Usage: $0 [--quiet|-q] <assembly.adoc> [more_files_or_dirs...]"
   exit 1
 fi
 
-for arg in "$@"; do
+for arg in "${args[@]}"; do
   if [[ -f "$arg" && "$arg" == *.adoc ]]; then
     abs_path="$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")"
     implode_file "$abs_path" "$arg"
@@ -140,4 +162,5 @@ for arg in "$@"; do
   else
     echo "Skipping unrecognized argument: $arg"
   fi
+
 done

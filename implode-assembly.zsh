@@ -60,7 +60,7 @@ implode_file() {
   local output_file=""
   local counter=1
   while true; do
-    output_file="$output_root/${base_name}_${git_branch}-${counter}.adoc"
+    output_file="$output_root/${base_name}_${git_branch}_v${counter}.adoc"
     [[ ! -e "$output_file" ]] && break
     ((counter++))
   done

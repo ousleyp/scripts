@@ -22,13 +22,22 @@ _usage_
 
 ```
 $ chmod +x ./implode-assembly.sh # make it executable
+```
 
-$ ./implode-assembly.sh <path/to/assembly> <path/to/another/assembly>
+Run the script, passing one or more arguments:
+
+```
+$ ./implode-assembly.sh <path/to/assembly> 
+
+# or, to implode all assemblies in a directory:
+
+$ ./implode-assembly.sh <path/to/directory>
 ```
 
 The output is saved to a file in a directory called
 `imploded_assemblies`. If the directory does not exist,
-it is created.
+it is created. If you passed a directory as an argument,
+all relevant directories are created in `imploded_assemblies`.
 
 The imploded assembly document has a default filename
 pattern of `<assembly>_<branch>_v<n>.adoc`, where _n_ 
@@ -50,9 +59,3 @@ For example:
  Snippets:       0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-
-If you prefer zsh as your shell, `implode-assembly.zsh` works the same way.
-
-### roadmap
-
-- add directory support 

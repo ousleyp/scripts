@@ -54,10 +54,15 @@ implode_file() {
   git_branch="${git_branch:-not-in-git}"
 
   local base_name="$(basename "$input_file" .adoc)"
+  local input_base="$(basename "$label")"
+  local rel_path="${label%/*}"
+  local output_subdir="$output_root/$rel_path"
+  mkdir -p "$output_subdir"
+
   local output_file=""
   local counter=1
   while true; do
-    output_file="$output_root/${base_name}_${git_branch}_v${counter}.adoc"
+    output_file="$output_subdir/${base_name}_${git_branch}_v${counter}.adoc"
     [[ ! -e "$output_file" ]] && break
     ((counter++))
   done
@@ -119,7 +124,7 @@ implode_file() {
 
 # MAIN
 if [[ "$#" -eq 0 ]]; then
-  echo "Usage: $0 <assembly.adoc> [more_files...]"
+  echo "Usage: $0 <assembly.adoc> [more_files_or_dirs...]"
   exit 1
 fi
 
@@ -128,7 +133,10 @@ for arg in "$@"; do
     abs_path="$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")"
     implode_file "$abs_path" "$arg"
   elif [[ -d "$arg" ]]; then
-    echo "[INFO] Directory input not yet implemented in this version"
+    find "$arg" -type f -name '*.adoc' | while IFS= read -r file; do
+      abs_path="$(cd "$(dirname "$file")" && pwd)/$(basename "$file")"
+      implode_file "$abs_path" "$file"
+    done
   else
     echo "Skipping unrecognized argument: $arg"
   fi

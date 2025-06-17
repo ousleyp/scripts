@@ -60,10 +60,10 @@ For example:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-If you want to suppress this output and only print a list of the generated files,
-run the command with the `-q` or `--quiet` flag.
+To suppress this output and only print a list of generated
+files, run the command with the `-q` or `--quiet` flag.
 
-Example output:
+For example:
 
 ```
 ❯ ~/implode-assembly.sh virt/install -q

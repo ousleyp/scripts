@@ -1,7 +1,9 @@
 # scripts
 
 I can't fully vouch for the quality of these scripts,
-which were generated with AI chatbot assistance.
+which were generated with AI chatbot assistance. If
+you are a human with advice, feel free to ping me on 
+Slack!
 
 I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you

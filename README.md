@@ -7,6 +7,8 @@ I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you
 are welcome to use them.
 
+## implode-assembly.zsh
+
 **implode-assembly.zsh** prepares documentation for use
 with AI such as NotebookLM by "inlining" the contents
 of included modules/snippets while retaining the
@@ -15,9 +17,11 @@ the markup/raw files in addition to the content.
 
 _usage_
 
+```
 $ chmod +x ./implode-assembly.zsh # make it executable
 
 $ ./implode-assembly.zsh <path/to/assembly>
+```
 
 The output is saved to a file in a directory called
 `imploded_assemblies`. If the directory does not exist,

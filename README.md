@@ -21,7 +21,7 @@ _usage_
 ```
 $ chmod +x ./implode-assembly.sh # make it executable
 
-$ ./implode-assembly.sh <path/to/assembly>
+$ ./implode-assembly.sh <path/to/assembly> <path/to/another/assembly>
 ```
 
 The output is saved to a file in a directory called

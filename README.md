@@ -5,7 +5,8 @@ which were generated with AI chatbot assistance.
 
 I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you
-are welcome to use them.
+are welcome to use them. Bear in mind that they might
+be incomplete.
 
 ## implode-assembly.zsh
 
@@ -28,4 +29,8 @@ The output is saved to a file in a directory called
 it is created.
 
 You can also run `./implode-assembly.zsh -h` for an
-example of the output file. 
+example of the output file.
+
+### roadmap
+
+- add directory support 

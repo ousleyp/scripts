@@ -59,3 +59,16 @@ For example:
  Snippets:       0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+If you want to suppress this output and only print a list of the generated files,
+run the command with the `-q` or `--quiet` flag.
+
+Example output:
+
+```
+❯ ~/implode-assembly.sh virt/install -q
+Generated files:
+/Users/panousley/imploded_assemblies/virt/install/installing-virt_main_v8.adoc
+/Users/panousley/imploded_assemblies/virt/install/uninstalling-virt_main_v8.adoc
+/Users/panousley/imploded_assemblies/virt/install/preparing-cluster-for-virt_main_v8.adoc
+```

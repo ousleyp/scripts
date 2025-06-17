@@ -28,9 +28,6 @@ The output is saved to a file in a directory called
 `imploded_assemblies`. If the directory does not exist,
 it is created.
 
-You can also run `./implode-assembly.zsh -h` for an
-example of the output file.
-
 ### roadmap
 
 - add directory support 

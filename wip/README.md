@@ -24,6 +24,8 @@ _usage_
 $ chmod +x ./implode-assembly.sh # make it executable
 ```
 
+Run the script, passing one or more arguments:
+
 ```
 $ ./implode-assembly.sh <path/to/assembly> 
 
@@ -31,7 +33,6 @@ $ ./implode-assembly.sh <path/to/assembly>
 
 $ ./implode-assembly.sh <path/to/directory>
 ```
-
 
 The output is saved to a file in a directory called
 `imploded_assemblies`. If the directory does not exist,

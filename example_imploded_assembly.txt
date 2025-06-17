@@ -1,0 +1,302 @@
+// This file contains a fully expanded version of an OpenShift documentation *assembly* written in AsciiDoc.
+// It is not valid AsciiDoc for publishing, because it includes both the original `include::` statements
+// and the full contents of the referenced *module* or *snippet* files placed immediately underneath each include.
+// Includes that reference `_attributes/` files remain untouched, as attribute files are not inlined.
+// The purpose of this imploded version is to expose the raw AsciiDoc used throughout the document
+// so that AI tools can analyze document structure, content organization, and AsciiDoc conventions
+// without needing to resolve external files.
+
+// Imploded on: 2025-06-17 12:59:09
+// Git branch:  bulk-storageclass-tp
+
+:_mod-docs-content-type: ASSEMBLY
+include::_attributes/common-attributes.adoc[]
+[id="installing-virt"]
+= Installing {VirtProductName}
+:context: installing-virt
+
+toc::[]
+
+Install {VirtProductName} to add virtualization functionality to your {product-title} cluster.
+
+ifndef::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+[IMPORTANT]
+====
+If you install {VirtProductName} in a restricted environment with no internet connectivity, you must xref:../../disconnected/using-olm.adoc#olm-restricted-networks[configure Operator Lifecycle Manager for disconnected environments].
+
+If you have limited internet connectivity, you can xref:../../operators/admin/olm-configuring-proxy-support.adoc#olm-configuring-proxy-support[configure proxy support in OLM] to access the OperatorHub.
+====
+endif::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+
+[id="installing-virt-operator_installing-virt"]
+== Installing the {VirtProductName} Operator
+
+Install the {VirtProductName} Operator by using the {product-title} web console or the command line.
+
+include::modules/virt-installing-virt-operator.adoc[leveloffset=+2]
+// BEGIN inlined: modules/virt-installing-virt-operator.adoc
+// Module included in the following assemblies:
+//
+// * virt/install/installing-virt.adoc
+
+:_mod-docs-content-type: PROCEDURE
+[id="virt-installing-virt-operator_{context}"]
+= Installing the {VirtProductName} Operator by using the web console
+
+You can deploy the {VirtProductName} Operator by using the {product-title} web console.
+
+.Prerequisites
+
+* Install {product-title} {product-version} on your cluster.
+* Log in to the {product-title} web console as a user with `cluster-admin` permissions.
+// required for ROSA/OSD
+ifdef::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+* Create a machine pool based on a bare metal compute node instance type. For more information, see "Creating a machine pool" in the Additional resources of this section.
+endif::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+
+.Procedure
+
+. From the *Administrator* perspective, click *Operators* -> *OperatorHub*.
+
+. In the *Filter by keyword* field, type *Virtualization*.
+
+. Select the *{CNVOperatorDisplayName}* tile with the *Red Hat* source label.
+
+. Read the information about the Operator and click *Install*.
+
+. On the *Install Operator* page:
+
+.. Select *stable* from the list of available *Update Channel* options. This ensures that you install the version of {VirtProductName} that is compatible with your {product-title} version.
+
+.. For *Installed Namespace*, ensure that the *Operator recommended namespace* option is selected. This installs the Operator in the mandatory `{CNVNamespace}` namespace, which is automatically created if it does not exist.
++
+[WARNING]
+====
+Attempting to install the {VirtProductName} Operator in a namespace other than `{CNVNamespace}` causes the installation to fail.
+====
+
+.. For *Approval Strategy*, it is highly recommended that you select *Automatic*, which is the default value, so that {VirtProductName} automatically updates when a new version is available in the *stable* update channel.
++
+While it is possible to select the *Manual* approval strategy, this is inadvisable because of the high risk that it presents to the supportability and functionality of your cluster. Only select *Manual* if you fully understand these risks and cannot use *Automatic*.
++
+[WARNING]
+====
+Because {VirtProductName} is only supported when used with the corresponding {product-title} version, missing {VirtProductName} updates can cause your cluster to become unsupported.
+====
+
+. Click *Install* to make the Operator available to the `{CNVNamespace}` namespace.
+
+. When the Operator installs successfully, click *Create HyperConverged*.
+
+. Optional: Configure *Infra* and *Workloads* node placement options for {VirtProductName} components.
+
+. Click *Create* to launch {VirtProductName}.
+
+.Verification
+
+* Navigate to the *Workloads* -> *Pods* page and monitor the {VirtProductName} pods until they are all *Running*. After all the pods display the *Running* state, you can use {VirtProductName}.
+// END inlined: modules/virt-installing-virt-operator.adoc
+
+ifdef::openshift-rosa,openshift-rosa-hcp[]
+[role="_additional-resources"]
+.Additional resources
+
+* xref:../../rosa_cluster_admin/rosa_nodes/rosa-managing-worker-nodes.html#creating_a_machine_pool_rosa-managing-worker-nodes[Creating a machine pool]
+endif::openshift-rosa,openshift-rosa-hcp[]
+
+ifdef::openshift-dedicated[]
+[role="_additional-resources"]
+.Additional resources
+
+* xref:../../osd_cluster_admin/osd_nodes/osd-managing-worker-nodes.html#creating_machine_pools_ocm_osd-managing-worker-nodes[Creating a machine pool]
+endif::openshift-dedicated[]
+
+[id="installing-virt-operator-cli_installing-virt"]
+=== Installing the {VirtProductName} Operator by using the command line
+
+Subscribe to the {VirtProductName} catalog and install the {VirtProductName} Operator by applying manifests to your cluster.
+
+include::modules/virt-subscribing-cli.adoc[leveloffset=+3]
+// BEGIN inlined: modules/virt-subscribing-cli.adoc
+// Module included in the following assemblies:
+//
+// * virt/install/installing-virt.adoc
+
+:_mod-docs-content-type: PROCEDURE
+[id="virt-subscribing-cli_{context}"]
+= Subscribing to the {VirtProductName} catalog by using the CLI
+
+Before you install {VirtProductName}, you must subscribe to the {VirtProductName} catalog. Subscribing gives the `{CNVNamespace}` namespace access to the {VirtProductName} Operators.
+
+To subscribe, configure `Namespace`, `OperatorGroup`, and `Subscription` objects by applying a single manifest to your cluster.
+
+.Prerequisites
+* Install {product-title} {product-version} on your cluster.
+* Install the OpenShift CLI (`oc`).
+* Log in as a user with `cluster-admin` privileges.
+
+.Procedure
+ifdef::openshift-enterprise[]
+. Create a YAML file that contains the following manifest:
+//Note that there are two versions of the following YAML file; the first one is for openshift-enterprise and the second is for openshift-origin (aka OKD).
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {CNVNamespace}
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: kubevirt-hyperconverged-group
+  namespace: {CNVNamespace}
+spec:
+  targetNamespaces:
+    - {CNVNamespace}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: hco-operatorhub
+  namespace: {CNVNamespace}
+spec:
+  source: {CNVSubscriptionSpecSource}
+  sourceNamespace: openshift-marketplace
+  name: {CNVSubscriptionSpecName}
+  startingCSV: kubevirt-hyperconverged-operator.v{HCOVersion}
+  channel: "stable" <1>
+----
+<1> Using the `stable` channel ensures that you install the version of
+{VirtProductName} that is compatible with your {product-title} version.
+endif::openshift-enterprise[]
+
+ifdef::openshift-origin[]
+. Create a YAML file that contains the following manifest:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {CNVNamespace}
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: kubevirt-hyperconverged-group
+  namespace: {CNVNamespace}
+spec: {}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: hco-operatorhub
+  namespace: {CNVNamespace}
+spec:
+  source: {CNVSubscriptionSpecSource}
+  sourceNamespace: openshift-marketplace
+  name: {CNVSubscriptionSpecName}
+  startingCSV: kubevirt-hyperconverged-operator.v{HCOVersion}
+  channel: "stable" <1>
+----
+<1> Using the `stable` channel ensures that you install the version of
+{VirtProductName} that is compatible with your {product-title} version.
+endif::openshift-origin[]
+
+. Create the required `Namespace`, `OperatorGroup`, and `Subscription` objects
+for {VirtProductName} by running the following command:
++
+[source,terminal]
+----
+$ oc apply -f <file name>.yaml
+----
+// END inlined: modules/virt-subscribing-cli.adoc
+
+[NOTE]
+====
+You can xref:../../virt/post_installation_configuration/virt-configuring-certificate-rotation.adoc#virt-configuring-certificate-rotation[configure certificate rotation] parameters in the YAML file.
+====
+
+include::modules/virt-deploying-operator-cli.adoc[leveloffset=+3]
+// BEGIN inlined: modules/virt-deploying-operator-cli.adoc
+// Module included in the following assemblies:
+//
+// * virt/install/installing-virt.adoc
+
+:_mod-docs-content-type: PROCEDURE
+[id="virt-deploying-operator-cli_{context}"]
+= Deploying the {VirtProductName} Operator by using the CLI
+
+You can deploy the {VirtProductName} Operator by using the `oc` CLI.
+
+.Prerequisites
+
+* Install the {oc-first}.
+* Subscribe to the {VirtProductName} catalog in the `{CNVNamespace}` namespace.
+* Log in as a user with `cluster-admin` privileges.
+// required for ROSA/OSD
+ifdef::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+* Create a machine pool based on a bare metal compute node instance type.
+endif::openshift-rosa,openshift-dedicated,openshift-rosa-hcp[]
+
+.Procedure
+
+. Create a YAML file that contains the following manifest:
++
+[source,yaml,subs="attributes+"]
+----
+apiVersion: hco.kubevirt.io/v1beta1
+kind: HyperConverged
+metadata:
+  name: kubevirt-hyperconverged
+  namespace: {CNVNamespace}
+spec:
+----
+
+. Deploy the {VirtProductName} Operator by running the following command:
++
+[source,terminal]
+----
+$ oc apply -f <file_name>.yaml
+----
+
+.Verification
+
+* Ensure that {VirtProductName} deployed successfully by watching the `PHASE` of the cluster service version (CSV) in the `{CNVNamespace}` namespace. Run the following command:
++
+[source,terminal,subs="attributes+"]
+----
+$ watch oc get csv -n {CNVNamespace}
+----
++
+The following output displays if deployment was successful:
++
+.Example output
+[source,terminal,subs="attributes+"]
+----
+NAME                                      DISPLAY                    VERSION   REPLACES   PHASE
+kubevirt-hyperconverged-operator.v{HCOVersion}   {VirtProductName}   {HCOVersion}                Succeeded
+----
+
+// END inlined: modules/virt-deploying-operator-cli.adoc
+
+ifdef::openshift-rosa,openshift-rosa-hcp[]
+[role="_additional-resources"]
+.Additional resources
+
+* xref:../../rosa_cluster_admin/rosa_nodes/rosa-managing-worker-nodes.html#creating_a_machine_pool_rosa-managing-worker-nodes[Creating a machine pool]
+endif::openshift-rosa,openshift-rosa-hcp[]
+
+ifdef::openshift-dedicated[]
+[role="_additional-resources"]
+.Additional resources
+
+* xref:../../osd_cluster_admin/osd_nodes/osd-managing-worker-nodes.html#creating_machine_pools_ocm_osd-managing-worker-nodes[Creating a machine pool]
+endif::openshift-dedicated[]
+
+[id="installing-virt-web-next-steps"]
+== Next steps
+
+* The xref:../../virt/storage/virt-configuring-local-storage-with-hpp.adoc#virt-creating-hpp-basic-storage-pool_virt-configuring-local-storage-with-hpp[hostpath provisioner] is a local storage provisioner designed for {VirtProductName}. If you want to configure local storage for virtual machines, you must enable the hostpath provisioner first.

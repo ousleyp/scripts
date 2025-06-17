@@ -20,8 +20,7 @@ inline_file_recursively() {
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     if echo "$line" | grep -q 'include::.*\.adoc'; then
-      local include_target resolved_path
-      include_target=$(echo "$line" | sed -nE 's/.*include::([^\[]+\.adoc).*/\1/p')
+      include_target="$(echo "$line" | sed -nE 's/.*include::([^\[]+\.adoc).*/\1/p')"
       resolved_path="$file_dir/$include_target"
 
       if [[ "$include_target" == */_attributes/* ]]; then
@@ -46,19 +45,28 @@ implode_file() {
 
   local -a included_modules
   local -a included_snippets
-  local comment_lines=$(echo "$ai_comment_block" | wc -l | tr -d ' ')
 
   local temp_content temp_final
   temp_content=$(mktemp)
   temp_final=$(mktemp)
 
+  # Metadata info
+  local timestamp
+  timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+  local git_branch
+  git_branch="$(git -C "${input_file:h}" rev-parse --abbrev-ref HEAD 2>/dev/null)"
+  git_branch="${git_branch:-[not in git repo]}"
+
+  echo "// Imploded on: $timestamp" >> "$temp_content"
+  echo "// Git branch:  $git_branch" >> "$temp_content"
+  echo "" >> "$temp_content"
+
   while IFS= read -r line || [[ -n "$line" ]]; do
     echo "$line" >> "$temp_content"
 
     if echo "$line" | grep -q 'include::modules/.*\.adoc'; then
-      local module_path resolved_path
-      module_path=$(echo "$line" | sed -nE 's/.*include::(modules\/[^[]+\.adoc).*/\1/p')
-      [[ -n "$module_path" ]] && included_modules+=("$module_path")
+      module_path="$(echo "$line" | sed -nE 's/.*include::(modules\/[^\[]+\.adoc).*/\1/p')"
+      [[ -n "$module_path" ]] && included_modules+="$module_path"
       resolved_path="${input_file:h}/$module_path"
 
       if [[ -f "$resolved_path" ]]; then
@@ -70,9 +78,8 @@ implode_file() {
       fi
 
     elif echo "$line" | grep -q 'include::snippets/.*\.adoc'; then
-      local snippet_path resolved_path
-      snippet_path=$(echo "$line" | sed -nE 's/.*include::(snippets\/[^[]+\.adoc).*/\1/p')
-      [[ -n "$snippet_path" ]] && included_snippets+=("$snippet_path")
+      snippet_path="$(echo "$line" | sed -nE 's/.*include::(snippets\/[^\[]+\.adoc).*/\1/p')"
+      [[ -n "$snippet_path" ]] && included_snippets+="$snippet_path"
       resolved_path="${input_file:h}/$snippet_path"
 
       if [[ -f "$resolved_path" ]]; then
@@ -85,7 +92,6 @@ implode_file() {
     fi
   done < "$input_file"
 
-  # Prepend comment block
   echo "$ai_comment_block" > "$temp_final"
   echo "" >> "$temp_final"
   cat "$temp_content" >> "$temp_final"
@@ -93,26 +99,27 @@ implode_file() {
   mv "$temp_final" "$output_file"
   rm "$temp_content"
 
-  # Line count (excluding comment)
-  local line_count=$(tail -n +$((comment_lines + 2)) "$output_file" | wc -l | tr -d ' ')
-
-  # Pretty terminal output
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo " Imploded:       $output_file"
   echo " Source:         $label"
+  echo " Timestamp:      $timestamp"
+  echo " Git branch:     $git_branch"
   echo " Modules:        ${#included_modules[@]}"
   for m in "${(@)included_modules}"; do echo "   • $m"; done
   echo " Snippets:       ${#included_snippets[@]}"
   for s in "${(@)included_snippets}"; do echo "   • $s"; done
-  echo " Line count:     $line_count"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
 }
 
 # MAIN
+if [[ "$#" -eq 0 ]]; then
+  echo "Usage: $0 <assembly.adoc> [more_files...]"
+  exit 1
+fi
+
 for arg in "$@"; do
   if [[ -f "$arg" && "$arg" == *.adoc ]]; then
-    local abs_path out_path
     abs_path="$(cd "${arg:h}" && pwd)/${arg:t}"
     out_path="$output_root/imploded-${arg:t}"
     implode_file "$abs_path" "$out_path" "$arg"
@@ -122,4 +129,3 @@ for arg in "$@"; do
     echo "Skipping unrecognized argument: $arg"
   fi
 done
-

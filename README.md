@@ -28,6 +28,10 @@ The output is saved to a file in a directory called
 `imploded_assemblies`. If the directory does not exist,
 it is created.
 
+The imploded assembly document has a default filename
+pattern of <assembly>_<branch>-<n>.adoc, where _n_ 
+increments if a file already exists.
+
 ### roadmap
 
 - bash shell compatibility

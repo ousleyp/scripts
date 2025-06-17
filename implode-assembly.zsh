@@ -40,8 +40,7 @@ inline_file_recursively() {
 
 implode_file() {
   local input_file="$1"
-  local output_file="$2"
-  local label="$3"
+  local label="$2"
 
   local -a included_modules
   local -a included_snippets
@@ -55,7 +54,16 @@ implode_file() {
   timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
   local git_branch
   git_branch="$(git -C "${input_file:h}" rev-parse --abbrev-ref HEAD 2>/dev/null)"
-  git_branch="${git_branch:-[not in git repo]}"
+  git_branch="${git_branch:-not-in-git}"
+
+  local base_name="${input_file:t:r}"
+  local output_file=""
+  local counter=1
+  while true; do
+    output_file="$output_root/${base_name}_${git_branch}-${counter}.adoc"
+    [[ ! -e "$output_file" ]] && break
+    ((counter++))
+  done
 
   echo "// Imploded on: $timestamp" >> "$temp_content"
   echo "// Git branch:  $git_branch" >> "$temp_content"
@@ -121,8 +129,7 @@ fi
 for arg in "$@"; do
   if [[ -f "$arg" && "$arg" == *.adoc ]]; then
     abs_path="$(cd "${arg:h}" && pwd)/${arg:t}"
-    out_path="$output_root/imploded-${arg:t}"
-    implode_file "$abs_path" "$out_path" "$arg"
+    implode_file "$abs_path" "$arg"
   elif [[ -d "$arg" ]]; then
     echo "[INFO] Directory input not yet implemented in this version"
   else

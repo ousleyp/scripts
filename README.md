@@ -29,8 +29,25 @@ The output is saved to a file in a directory called
 it is created.
 
 The imploded assembly document has a default filename
-pattern of <assembly>_<branch>-<n>.adoc, where _n_ 
+pattern of `<assembly>_<branch>-<n>.adoc`, where _n_ 
 increments if a file already exists.
+
+For example:
+
+```
+❯ ~/implode-assembly.zsh virt/install/installing-virt.adoc
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Imploded:       /Users/panousley/imploded_assemblies/installing-virt_main-2.adoc
+ Source:         virt/install/installing-virt.adoc
+ Timestamp:      2025-06-17 13:19:35
+ Git branch:     main
+ Modules:        3
+   • modules/virt-installing-virt-operator.adoc
+   • modules/virt-subscribing-cli.adoc
+   • modules/virt-deploying-operator-cli.adoc
+ Snippets:       0
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ### roadmap
 

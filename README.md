@@ -43,7 +43,7 @@ it is created. If you passed a directory as an argument,
 all relevant directories are created in `imploded_assemblies`.
 
 The imploded assembly document has a default filename
-pattern of `<assembly>_<branch>_v<n>.adoc`, where _n_ 
+pattern of `<assembly>_<branch>_v<n>.txt`, where _n_ 
 increments if a file already exists.
 
 For example:
@@ -51,7 +51,7 @@ For example:
 ```
 ❯ ~/implode-assembly.sh virt/install/installing-virt.adoc
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Imploded:       /Users/panousley/imploded_assemblies/installing-virt_main_v2.adoc
+ Output file:    /Users/panousley/imploded_assemblies/installing-virt_main_v2.txt
  Source:         virt/install/installing-virt.adoc
  Timestamp:      2025-06-17 13:19:35
  Git branch:     main
@@ -71,7 +71,7 @@ For example:
 ```
 ❯ ~/implode-assembly.sh virt/install -q
 Generated files:
-/Users/panousley/imploded_assemblies/virt/install/installing-virt_main_v8.adoc
-/Users/panousley/imploded_assemblies/virt/install/uninstalling-virt_main_v8.adoc
-/Users/panousley/imploded_assemblies/virt/install/preparing-cluster-for-virt_main_v8.adoc
+/Users/panousley/imploded_assemblies/virt/install/installing-virt_main_v8.txt
+/Users/panousley/imploded_assemblies/virt/install/uninstalling-virt_main_v8.txt
+/Users/panousley/imploded_assemblies/virt/install/preparing-cluster-for-virt_main_v8.txt
 ```

@@ -6,8 +6,8 @@
 // so that AI tools can analyze document structure, content organization, and AsciiDoc conventions
 // without needing to resolve external files.
 
-// Imploded on: 2025-06-17 13:27:49
-// Git branch:  main
+// Imploded on: 2025-06-18 12:42:36
+// Git branch:  enterprise-4.20
 
 :_mod-docs-content-type: ASSEMBLY
 include::_attributes/common-attributes.adoc[]

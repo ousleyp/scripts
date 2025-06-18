@@ -1,15 +1,19 @@
 # scripts
 
-I can't fully vouch for the quality of these scripts,
+Disclaimer: I can't fully vouch for the quality of these scripts,
 which were generated with AI chatbot assistance. If
 you are a human with feedback, feel free to ping me on 
 Slack!
 
 I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you
-are welcome to use them. Bear in mind that they might
-need more testing, and they are based on the structure
-of the openshift-docs repo.
+are welcome to use them. 
+
+###important
+
+This script is based on the structure of the openshift-docs 
+repo. If your repo structure is different, you might need
+to make changes to your copy of the script.
 
 ## implode-assembly.sh
 

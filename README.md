@@ -9,7 +9,7 @@ I created these scripts with CCS goals in mind (such
 as performing Content Quality Assessments), and you
 are welcome to use them. 
 
-###important
+### important
 
 This script is based on the structure of the openshift-docs 
 repo. If your repo structure is different, you might need

@@ -76,7 +76,7 @@ implode_file() {
   local output_file=""
   local counter=1
   while true; do
-    output_file="$output_subdir/${base_name}_${git_branch}_v${counter}.adoc"
+    output_file="$output_subdir/${base_name}_${git_branch}_v${counter}.txt"
     [[ ! -e "$output_file" ]] && break
     ((counter++))
   done
@@ -125,7 +125,7 @@ implode_file() {
 
   if [[ "$suppress_output" == false ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo " Imploded:       $output_file"
+    echo " Output file:    $output_file"
     echo " Source:         $label"
     echo " Timestamp:      $timestamp"
     echo " Git branch:     $git_branch"

@@ -1,6 +1,6 @@
 // Fully expanded assembly
 
-// Imploded on: 2025-06-23 16:08:50
+// Imploded on: 2025-06-23 16:19:32
 // Git branch: main
         // include attributes via conditional logic. DONT CHANGE this.
         
@@ -228,47 +228,11 @@
     
     
     // ifeval::["{parent-context}" == "ros-concepts"]
-    // BEGIN inlined: modules/rbac/con-roles-for-ros.adoc
-    // include attributes via conditional logic
-    
-    
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-ros-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    include::{modules}/common/id.adoc[]
-    = User Access roles for resource optimization users
-    
-    The following roles enable standard or enhanced access to resource optimization service features in {PRODUCTNAMESHORT}:
-    
-    * **Resource optimization viewer.** Read any resource optimization service resource.
-    * **Resource optimization administrator.** 	Perform any available operation against any resource optimization service resource.
-    // END inlined: modules/rbac/con-roles-for-ros.adoc
+    // include::{modules}/rbac/con-roles-for-ros.adoc[leveloffset=+1]
     // endif::[]
     
     // ifeval::["{parent-context}" == "patch-service-overview"]
-    // BEGIN inlined: modules/rbac/con-roles-for-patch-content.adoc
-    // include attributes via conditional logic
-    
-    
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-patch-content
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    include::{modules}/common/id.adoc[]
-    = User Access roles for system content templates and patch updates
-    
-    The following roles enable standard or enhanced access to content template features in {PRODUCTNAMESHORT}:
-    
-    * **Content Template viewer.** Read any content template resource.
-    * **Content Template administrator.** Perform any available operation on any content template resource.
-    // END inlined: modules/rbac/con-roles-for-patch-content.adoc
+    // include::{modules}/rbac/con-roles-for-patch-content.adoc[leveloffset=+1]
     // endif::[]
     
     ifdef::parent-context[:context: {parent-context}]

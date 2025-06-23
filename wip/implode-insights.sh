@@ -31,7 +31,7 @@ gather_used_attributes() {
   grep -oE '\{[a-zA-Z0-9_-]+\}' "$file" | tr -d '{}' | sort | uniq
 }
 
-# Parse only needed attributes from a file
+# Parse only needed attributes
 parse_needed_attributes() {
   local file="$1"; shift
   local needed=("$@")
@@ -50,9 +50,14 @@ inline_file_recursively() {
   ASSEMBLY_STACK+=("$file_path")
 
   while IFS= read -r line || [[ -n "$line" ]]; do
-    # Handle ifeval blocks
+    # Skip entirely commented-out lines
+    if [[ "$line" =~ ^// ]]; then
+      echo "$(printf '    %.0s' $(seq 1 $depth))$line"
+      continue
+    fi
+
+    # Handle ifeval block that matches parent context
     if [[ "$line" =~ ^ifeval::\[\"{parent-context}\"[[:space:]]*==[[:space:]]*\"$parent_context\" ]]; then
-      # Match this include
       read -r include_line
       if [[ "$include_line" =~ include::([^\[]+)\[.* ]]; then
         target_line="${BASH_REMATCH[1]}"
@@ -69,12 +74,12 @@ inline_file_recursively() {
       while IFS= read -r skip_line && [[ ! "$skip_line" =~ ^endif:: ]]; do :; done
       continue
     elif [[ "$line" =~ ^ifeval:: ]]; then
-      # Skip entire conditional block
+      # Skip any non-matching ifeval block
       while IFS= read -r skip_line && [[ ! "$skip_line" =~ ^endif:: ]]; do :; done
       continue
     fi
 
-    # Handle includes
+    # Inline other includes
     if [[ "$line" =~ include::([^\[]+\.adoc) ]]; then
       local include_target="${BASH_REMATCH[1]}"
       for attr in "${!attributes[@]}"; do
@@ -82,6 +87,7 @@ inline_file_recursively() {
       done
       local resolved_path="$file_dir/$include_target"
 
+      # Skip common boilerplate includes
       case "$include_target" in
         *common/id.adoc|*common/begin-nested-context.adoc|*common/end-nested-context.adoc)
           echo "$(printf '    %.0s' $(seq 1 $depth))$line"

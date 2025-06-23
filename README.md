@@ -15,6 +15,10 @@ This script is based on the structure of the openshift-docs
 repo. If your repo structure is different, you might need
 to make changes to your copy of the script.
 
+Also, the current version of this script probably can't handle ifevals around module include statements... sorry!
+
+It also doesn't support nested assemblies.
+
 ## implode-assembly.sh
 
 **implode-assembly.sh** prepares documentation for use

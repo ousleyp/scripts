@@ -25,13 +25,13 @@ parse_defined_attributes() {
   done < "$file"
 }
 
-# Gather all attributes *used* in a file
+# Gather all attributes used in a file
 gather_used_attributes() {
   local file="$1"
   grep -oE '\{[a-zA-Z0-9_-]+\}' "$file" | tr -d '{}' | sort | uniq
 }
 
-# Parse only needed attributes
+# Parse only needed attributes from a file
 parse_needed_attributes() {
   local file="$1"; shift
   local needed=("$@")
@@ -50,21 +50,44 @@ inline_file_recursively() {
   ASSEMBLY_STACK+=("$file_path")
 
   while IFS= read -r line || [[ -n "$line" ]]; do
+    # Handle ifeval blocks
+    if [[ "$line" =~ ^ifeval::\[\"{parent-context}\"[[:space:]]*==[[:space:]]*\"$parent_context\" ]]; then
+      # Match this include
+      read -r include_line
+      if [[ "$include_line" =~ include::([^\[]+)\[.* ]]; then
+        target_line="${BASH_REMATCH[1]}"
+        for attr in "${!attributes[@]}"; do
+          target_line="${target_line//\{$attr\}/${attributes[$attr]}}"
+        done
+        local resolved_path="$file_dir/$target_line"
+        MODULE_LIST+=("${ASSEMBLY_STACK[-1]}|$depth|$target_line")
+        echo "$(printf '    %.0s' $(seq 1 $depth))// BEGIN conditional module: $target_line"
+        inline_file_recursively "$resolved_path" "$depth"
+        echo "$(printf '    %.0s' $(seq 1 $depth))// END conditional module: $target_line"
+      fi
+      # Skip to endif
+      while IFS= read -r skip_line && [[ ! "$skip_line" =~ ^endif:: ]]; do :; done
+      continue
+    elif [[ "$line" =~ ^ifeval:: ]]; then
+      # Skip entire conditional block
+      while IFS= read -r skip_line && [[ ! "$skip_line" =~ ^endif:: ]]; do :; done
+      continue
+    fi
+
+    # Handle includes
     if [[ "$line" =~ include::([^\[]+\.adoc) ]]; then
       local include_target="${BASH_REMATCH[1]}"
-      # Substitute any attributes in the path
       for attr in "${!attributes[@]}"; do
         include_target="${include_target//\{$attr\}/${attributes[$attr]}}"
       done
       local resolved_path="$file_dir/$include_target"
 
-      # Skip common boilerplate files entirely
       case "$include_target" in
         *common/id.adoc|*common/begin-nested-context.adoc|*common/end-nested-context.adoc)
+          echo "$(printf '    %.0s' $(seq 1 $depth))$line"
           continue ;;
       esac
 
-      # Parse-only files like common.adoc
       if [[ "$(basename "$include_target")" == "common.adoc" ]]; then
         parse_defined_attributes "$resolved_path"
         echo "$(printf '    %.0s' $(seq 1 $depth))$line"
@@ -72,10 +95,7 @@ inline_file_recursively() {
         echo "$(printf '    %.0s' $(seq 1 $depth))$line"
       elif [[ -f "$resolved_path" ]]; then
         if [[ "$include_target" == modules/* || "$include_target" == snippets/* ]]; then
-          # Only list and inline if it's not a common file
-          if [[ "$include_target" != *common/* ]]; then
-            MODULE_LIST+=("${ASSEMBLY_STACK[-1]}|$depth|$include_target")
-          fi
+          MODULE_LIST+=("${ASSEMBLY_STACK[-1]}|$depth|$include_target")
           echo "$(printf '    %.0s' $(seq 1 $depth))// BEGIN inlined: $include_target"
           inline_file_recursively "$resolved_path" "$depth"
           echo "$(printf '    %.0s' $(seq 1 $depth))// END inlined: $include_target"
@@ -92,6 +112,7 @@ inline_file_recursively() {
       echo "$(printf '    %.0s' $(seq 1 $depth))$line"
     fi
   done < "$file_path"
+
   unset 'ASSEMBLY_STACK[-1]'
 }
 
@@ -105,10 +126,9 @@ print_module_list() {
   declare -A seen
   for entry in "${MODULE_LIST[@]}"; do
     IFS='|' read -r parent depth target <<<"$entry"
-    # Skip common files
-    if [[ "$target" == *common/* ]]; then continue; fi
     [[ -n "${seen[$parent-$target]}" ]] && continue
     seen[$parent-$target]=1
+    if [[ "$target" == *common/* ]]; then continue; fi
     local indent="$(printf '    %.0s' $(seq 1 $depth))"
     if [[ "$target" == NESTED* ]]; then
       target="${target#NESTED }"
@@ -132,10 +152,9 @@ for arg in "${args[@]}"; do
     [[ -f common.adoc ]] && parse_defined_attributes "common.adoc"
     attributes_files=($(grep -oE 'include::attributes/[^[]+' "$arg" | cut -d':' -f2))
     for attr_file in "${attributes_files[@]}"; do
-      if [[ -f "$attr_file" ]]; then
-        parse_needed_attributes "$attr_file" $used_attrs
-      fi
+      [[ -f "$attr_file" ]] && parse_needed_attributes "$attr_file" $used_attrs
     done
+    parent_context=$(grep '^:context:' "$arg" | cut -d':' -f3- | xargs)
 
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
     git_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo not-in-git)"
@@ -184,6 +203,7 @@ for arg in "${args[@]}"; do
 
     MODULE_LIST=()
   elif [[ -d "$arg" ]]; then
+    mkdir -p "$output_root/$arg"
     find "$arg" -type f -name '*.adoc' | while read -r file; do
       "$0" "$file"
     done

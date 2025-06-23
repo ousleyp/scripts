@@ -1,11 +1,12 @@
 // Fully expanded assembly
 
-// Imploded on: 2025-06-23 15:11:12
+// Imploded on: 2025-06-23 16:08:50
 // Git branch: main
         // include attributes via conditional logic. DONT CHANGE this.
         
         
         // modify context attribute for unique IDs in every assembly (see https://red.ht/context)
+        include::{modules}/common/begin-nested-context.adoc[]
         
         // define ID as an attribute - make it succint, not a full file name, for url brevity. The attribute text below is an example:
         :id: intro-compliance
@@ -14,6 +15,7 @@
         // follow with a level 0 header (denoted by a single equals sign)
         // the heading should be a gerund if the included modules consist mainly of procedures
         // leave a blank line after the header
+        include::{modules}/common/id.adoc[]
         = Red Hat Insights compliance service overview
         
         The {PRODUCTNAME} {COMPL} service enables IT security and compliance administrators to assess, monitor, and report on the security-policy compliance of {RHELSHORT} systems.
@@ -42,6 +44,7 @@
         // follow with a level 0 header (denoted by a single equals sign)
         // the heading should be a gerund if the included modules consist mainly of procedures
         // leave a blank line after the header
+        include::{modules}/common/id.adoc[]
         = Requirements and prerequisites
         
         The {COMPL} service is part of {PRODUCTNAME}, which is included with your Red{nbsp}Hat Enterprise Linux (RHEL) subscription and can be used with all versions of {RHELSHORT} currently supported by Red{nbsp}Hat. You do not need additional Red{nbsp}Hat subscriptions to use {PRODUCTNAMESHORT} and the {COMPL} service.
@@ -57,6 +60,7 @@
         // follow with a level 0 header (denoted by a single equals sign)
         // the heading should be a gerund if the included modules consist mainly of procedures
         // leave a blank line after the header
+        include::{modules}/common/id.adoc[]
         = Supported configurations
         
         {RH} supports specific versions of the  SCAP Security Guide (SSG) for each minor version of {RHEL} ({RHELSHORT}). The rules and policies in an SSG version are only accurate for one RHEL minor version. In order to receive accurate compliance reporting, the system must have the supported SSG version installed.
@@ -104,6 +108,7 @@
         // follow with a level 0 header (denoted by a single equals sign)
         // the heading should be a gerund if the included modules consist mainly of procedures
         // leave a blank line after the header
+        include::{modules}/common/id.adoc[]
         = Best practices
         
         To benefit from the best user experience and receive the most accurate results in the {COMPL} service, {RH} recommends that you follow some best practices.
@@ -127,6 +132,7 @@
     
     
     // modify context attribute for unique IDs in every assembly (see https://red.ht/context)
+    include::{modules}/common/begin-nested-context.adoc[]
     
     // define ID as an attribute - make it succint, not a full file name, for url brevity. The attribute text below is an example:
     :id: insights-rbac
@@ -135,6 +141,7 @@
     // follow with a level 0 header (denoted by a single equals sign)
     // the heading should be a gerund if the included modules consist mainly of procedures
     // leave a blank line after the header
+    include::{modules}/common/id.adoc[]
     = User Access settings in the {HCC}
     
     
@@ -192,58 +199,9 @@
     // set context for this assembly - may match id attribute, but can be distinct
     :context: insights-rbac
     
-    ifeval::["{parent-context}" == "red-hat-insights-remediation-guide"]
-    // BEGIN inlined: modules/rbac/con-roles-for-remediations.adoc
-    // include attributes via conditional logic
     
     
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-remediations-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for remediations users
-    
-    ifdef::PUBLIC[]
-    The following roles enable standard or enhanced access to remediations features in {PRODUCTNAMESHORT}:
-    
-    * *Remediations user.* The Remediations user role is included in the Default access group. The Remediations user role permits access to view existing remediation plans for the account and to create new plans. Remediations users cannot execute remediation plan playbooks on systems.
-    * *Remediations administrator.* The Remediations administrator role permits access to all {INSIGHTSSHORT} remediation capabilities, including remotely executing remediation plans on systems.
-    endif::[]
-    
-    ifdef::FEDRAMP[]
-    The Remediations user role enables standard or enhanced access to remediations features in {PRODUCTNAMESHORT}. The Remediations user role is included in the Default access group and permits access to view existing remediation plans and to create new plans. Remediations users cannot execute remediation plans on systems.
-    endif::[]
-    
-    // END inlined: modules/rbac/con-roles-for-remediations.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "adv-assess-overview"]
-    // BEGIN inlined: modules/rbac/con-roles-for-advisor.adoc
-    // include attributes via conditional logic
-    
-    
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-advisor-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for advisor service users
-    
-    The following roles enable standard or enhanced access to remediations features in {PRODUCTNAMESHORT}:
-    
-    * **RHEL Advisor administrator.** Perform any available operation against any {PRODUCTNAMESHORT} advisor-service resource.
-    
-    * **RHEL Advisor viewer.** Be able to read {ADV} data.
-    // END inlined: modules/rbac/con-roles-for-advisor.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "intro-compliance"]
-    // BEGIN inlined: modules/rbac/con-roles-for-compliance.adoc
+    // BEGIN conditional module: modules/rbac/con-roles-for-compliance.adoc
     // include attributes via conditional logic
     
     
@@ -254,187 +212,20 @@
     // follow with a level 0 header (denoted by a single equals sign)
     // the heading should be a gerund if the included modules consist mainly of procedures
     // leave a blank line after the header
+    include::{modules}/common/id.adoc[]
     = User Access roles for compliance-service users
     
     The following roles enable standard or enhanced access to compliance features in {PRODUCTNAMESHORT}:
     
     * **Compliance viewer.** A compliance-service role that grants read access to any compliance resource.
     * **Compliance administrator.** A compliance-service role that grants full access to any compliance resource. If a procedure requires that you be granted the Compliance administrator role or other enhanced permissions, it will be noted in the **_Prerequisites_** for that procedure.
-    // END inlined: modules/rbac/con-roles-for-compliance.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "vuln-overview"]
-    // BEGIN inlined: modules/rbac/con-roles-for-vulnerability.adoc
-    // include attributes via conditional logic
+    // END conditional module: modules/rbac/con-roles-for-compliance.adoc
     
     
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-vulnerability-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for vulnerability-service users
-    
-    The following roles enable standard or enhanced access to vulnerability service features in {PRODUCTNAMESHORT}:
-    
-    * **Vulnerability viewer.** Read any vulnerability-service resource.
-    * **Vulnerability administrator.** 	Perform any available operation against any vulnerability-service resource.
-    // END inlined: modules/rbac/con-roles-for-vulnerability.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "intro-rhc"]
-    // BEGIN inlined: modules/rbac/con-roles-for-rhc.adoc
-    // include attributes via conditional logic
     
     
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-remote-host-configuration-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for remote host configuration and management
-    
-    //6/5/2024 removed conditional PUBLIC statements because this is not FedRAMP yet. Noting items that might be need conditional in the future
-    There are several {RBAC} roles that are relevant for {PRODUCTNAME} users. These roles determine if an {INSIGHTSSHORT} user can simply view settings or change them, and use remediation features.
-    
-    //Use this when RHC is FedRAMP 
-    //{RBAC} roles are relevant for {PRODUCTNAME} users. 
-    
-    .{RBAC} roles for using the Remote Host Configuration Manager in the {PRODUCTNAMESHORT} web console
-    
-    * *RHC administrator.* Members in a group with this role can perform any operations in the rhc manager.
-    
-    //6/5/2024, removed conditionalization until this title is added to FedRAMP, but this viewer role appears as if it will need to be FedRAMP and PUBLIC when implemented
-    * *RHC user.* This is a default permission for all users on your organization’s {HCC} account, allowing anyone to see the current status of the configuration.
-    
-    .{RBAC} roles for using remediation features in the {PRODUCTNAMESHORT} web console
-    
-    * *Remediations administrator.* Members in a group with this role can perform any available operation against any remediations resource, including direct remediations.
-    
-    //6/5/2024, removed conditionalization until this title is added to FedRAMP, but this user role appears as if it will need to be FedRAMP and PUBLIC when implemented
-    * *Remediations user.* Members in a group with this role can create, view, update, and delete operations against any remediations resource. This is a default permission given to all {HCCSHORT} users on your account.
-    // END inlined: modules/rbac/con-roles-for-rhc.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "intro-policies"]
-    // BEGIN inlined: modules/rbac/con-roles-for-policies.adoc
-    // include attributes via conditional logic
     
     
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-policies-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for the Policies service
-    
-    The following predefined roles on the {HCC} enable access to {POL} features in {PRODUCTNAMESHORT}:
-    
-    * **Policies administrator role.** The Policies administrator role provides read and write access allowing these users to perform any available operation on policies resources. This predefined role is in the **Default admin access group**.
-    
-    * **Policies viewer role.**  The Policies viewer role provides read-only access. (If your organization determines that the default configuration of the Policies viewer role is inadequate, a **User Access administrator** can create a custom role with the specific permissions that you need.) This predefined role is in the **Default access group**.
-    
-    NOTE: If you configured groups before April 2023, any user who was not an Organization Administrator will have the Policies administrator role replaced with the Policies viewer role. Modifications made to the Default access group before April are not changed.
-    
-    .Additional Resources
-    ifdef::PUBLIC[]
-    * link:https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html/user_access_configuration_guide_for_role-based_access_control_rbac/assembly-rbac-procedures_user-access-configuration#doc-wrapper[How to use User Access] in the User Access Configuration Guide for Role-based Access Control (RBAC).
-    endif::[]
-    ifdef::FedRAMP[]
-    * link:https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html/user_access_configuration_guide_for_role-based_access_control_rbac_with_fedramp/assembly-rbac-procedures_user-access-configuration#doc-wrapper[How to use User Access] in the User Access Configuration Guide for Role-based Access Control (RBAC).
-    endif::[]
-    ifdef::PUBLIC[]
-    * link:https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html/user_access_configuration_guide_for_role-based_access_control_rbac/assembly-insights-rbac-reference_user-access-configuration[Predefined User Access roles]
-    endif::[]
-    ifdef::FedRAMP[]
-    * link:https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html/user_access_configuration_guide_for_role-based_access_control_rbac_with_fedramp/assembly-insights-rbac-reference_user-access-configuration[Predefined User Access roles]
-    endif::[]
-    // END inlined: modules/rbac/con-roles-for-policies.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "malware-svc-getting-started"]
-    // BEGIN inlined: modules/rbac/con-roles-for-malware.adoc
-    // include attributes via conditional logic
-    
-    
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-malware-signatures-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for the Malware detection service
-    
-    The following predefined roles on the {HCC} enable access to {MAL} features in {PRODUCTNAMESHORT}.
-    
-    IMPORTANT: There is no "default-group" role for {MAL} service users. For users to be able to view data or control settings in the {MAL} service, they must be members of the {RBAC} group with one of the following roles:
-    
-    .Permissions provided by the User Access roles 
-    [cols="3a,8a",options="header"]
-    |===
-    
-    |User Access Role |Permissions
-    
-    |*Malware detection viewer*
-    |* Read All
-    
-    ifdef::PUBLIC[]
-    |*Malware detection editor*
-    |* Read All
-     * Set user acknowledgment
-    endif::[]
-    
-    |*Malware detection administrator*
-    |* Read All
-     * Set user acknowledgment
-     * Delete hits
-     * Disable signatures permissions
-    |===
-    // END inlined: modules/rbac/con-roles-for-malware.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "overview-tasks"]
-    // BEGIN inlined: modules/rbac/con-roles-for-tasks.adoc
-    // include attributes via conditional logic
-    
-    
-    // define ID as an attribute - make it succinct, not a full file name, for url brevity. The following ID is an example:
-    :id: roles-for-tasks-users
-    
-    // assign the ID conditionally - the logic decides whether a context is needed or not
-    // follow with a level 0 header (denoted by a single equals sign)
-    // the heading should be a gerund if the included modules consist mainly of procedures
-    // leave a blank line after the header
-    = User Access roles for Insights Tasks users
-    
-    
-    The following role enables enhanced access to remediations features in {PRODUCTNAMESHORT}:
-    
-    
-    * *Tasks administrator.* The Tasks administrator role permits access to all Tasks capabilities to remotely execute Tasks on Insights-connected systems.
-    
-    
-    [NOTE]
-    ====
-    All members of the Default Admin Access group can also execute Tasks.
-    
-    A Tasks viewer role does not exist.
-    ====
-    
-    
-    // END inlined: modules/rbac/con-roles-for-tasks.adoc
-    endif::[]
-    
-    ifeval::["{parent-context}" == "drift-overview"]
-    // WARNING: could not resolve modules/rbac/con-roles-for-drift.adoc
-    endif::[]
     
     // ifeval::["{parent-context}" == "ros-concepts"]
     // BEGIN inlined: modules/rbac/con-roles-for-ros.adoc
@@ -448,6 +239,7 @@
     // follow with a level 0 header (denoted by a single equals sign)
     // the heading should be a gerund if the included modules consist mainly of procedures
     // leave a blank line after the header
+    include::{modules}/common/id.adoc[]
     = User Access roles for resource optimization users
     
     The following roles enable standard or enhanced access to resource optimization service features in {PRODUCTNAMESHORT}:
@@ -469,6 +261,7 @@
     // follow with a level 0 header (denoted by a single equals sign)
     // the heading should be a gerund if the included modules consist mainly of procedures
     // leave a blank line after the header
+    include::{modules}/common/id.adoc[]
     = User Access roles for system content templates and patch updates
     
     The following roles enable standard or enhanced access to content template features in {PRODUCTNAMESHORT}:
@@ -482,6 +275,8 @@
     ifndef::parent-context[:!context:]
     
     // reset context attribute in every assembly (see https://red.ht/context)
+    include::{modules}/common/end-nested-context.adoc[]
         // END inlined nested assembly: assemblies/rbac/assembly-rbac.adoc
         
         // reset context attribute in every assembly (see https://red.ht/context)
+        include::{modules}/common/end-nested-context.adoc[]

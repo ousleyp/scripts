@@ -5,8 +5,13 @@ extreme caution, a la interacting with a grizzly bear.
 
 ## in progress
 
-I'm working on adding support for ifevals around
-module include statements.
+The file implode-insights.sh is a bespoke script
+created for the Insights repo. With it, I'm working
+on adding support for ifevals around module include
+statements, as well as nested assemblies! o_o;
+
+I hope to take some of the functionality from it
+and bring it into the implode-assembly.sh script.
 
 ## requirements
 
